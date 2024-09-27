@@ -10,11 +10,14 @@ if(process.env.NODE_ENV !="production"){
     const ejsMate = require("ejs-mate");
     const expressError = require("./utils/expressError.js");
     const session = require("express-session");
+    const multer = require('multer');
     const MongoStore = require('connect-mongo');
     const flash = require("connect-flash");
     const passport = require("passport");
     const LocalStrategy = require("passport-local");
     const User = require("./models/user.js");
+    const cloudinary = require('cloudinary').v2;
+    const { CloudinaryStorage } = require('multer-storage-cloudinary');
     
     
     const listingRouter = require("./routers/listing.js");
@@ -24,6 +27,18 @@ if(process.env.NODE_ENV !="production"){
     // const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
     
     const dbUrl = process.env.ATLISTDB;
+
+
+    cloudinary.config({
+      CLOUD_NAME : 'domj6hj6j',
+      CLOUD_API_KEY : '619654362587413',
+      CLOUD_API_SECRET : 'fymBQJU5q66qPKxM1iR3S_YhtCc',
+      MAP_TOKEN : 'pk.eyJ1IjoiamFnbHlhbmhpbWFuc2h1IiwiYSI6ImNtMWRsdTJkNjB6cjMyaXNidGwyNzd5d3EifQ.GHZlofUaaiy8FSKvriOuFw',
+      ATLISTDB : 'mongodb+srv://vishalk389:5Hln6uYcMiR5Q6q8@cluster0.o06uk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',
+      SECRET : 'jbjbjghbmjmb',
+    });
+
+
     
     main()
       .then(() => {
@@ -45,6 +60,24 @@ if(process.env.NODE_ENV !="production"){
     app.use(express.static(path.join(__dirname,"/public")));
     
     
+
+    const storage = new CloudinaryStorage({
+      cloudinary: cloudinary,
+      params: {
+        folder: 'uploads',
+        format: async (req, file) => 'png', // supports promises as well
+        public_id: (req, file) => file.originalname
+      },
+    });
+
+    const upload = multer({ storage: storage });
+
+    app.post('/upload', upload.single('image'), (req, res) => {
+      res.send('File uploaded to Cloudinary');
+    });
+
+
+
     const store = MongoStore.create({
       mongoUrl: dbUrl,
       crypto: {
@@ -99,6 +132,7 @@ if(process.env.NODE_ENV !="production"){
       res.status(status).render("error.ejs",{message});
     });
     
-    app.listen(8080, () => {
-      console.log("server is listening to port 8080");
-    });
+    const PORT = process.env.PORT || 8080;
+    app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
