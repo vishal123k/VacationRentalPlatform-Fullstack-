@@ -92,7 +92,7 @@ if(process.env.NODE_ENV !="production"){
     app.use("/listings/:id/review", reviewRouter);
     app.use("/",userRouter);
     
-    app.all("*",(req,res,next)=>{
+    app.all("/",(req,res,next)=>{
       next(new expressError(404,"page not found"));
     });
     
@@ -101,9 +101,6 @@ if(process.env.NODE_ENV !="production"){
       res.status(status).render("error.ejs",{message});
     });
 
-    app.get("/",(req,res)=>{
-        res.redirect(dbUrl);
-    });
     
     app.listen(8080, () => {
     console.log(`Server running on port ${8080}`);
