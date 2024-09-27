@@ -10,14 +10,11 @@ if(process.env.NODE_ENV !="production"){
     const ejsMate = require("ejs-mate");
     const expressError = require("./utils/expressError.js");
     const session = require("express-session");
-    const multer = require('multer');
     const MongoStore = require('connect-mongo');
     const flash = require("connect-flash");
     const passport = require("passport");
     const LocalStrategy = require("passport-local");
     const User = require("./models/user.js");
-    const cloudinary = require('cloudinary').v2;
-    const { CloudinaryStorage } = require('multer-storage-cloudinary');
     
     
     const listingRouter = require("./routers/listing.js");
@@ -103,8 +100,11 @@ if(process.env.NODE_ENV !="production"){
       let {status = 500,message} = err;
       res.status(status).render("error.ejs",{message});
     });
+
+    app.get("/",(req,res)=>{
+        res.redirect(dbUrl);
+    });
     
-    const PORT = process.env.PORT || 8080;
-    app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    app.listen(8080, () => {
+    console.log(`Server running on port ${8080}`);
 });
