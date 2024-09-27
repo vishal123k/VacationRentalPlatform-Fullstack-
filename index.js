@@ -28,17 +28,6 @@ if(process.env.NODE_ENV !="production"){
     
     const dbUrl = process.env.ATLISTDB;
 
-
-    cloudinary.config({
-      CLOUD_NAME : 'domj6hj6j',
-      CLOUD_API_KEY : '619654362587413',
-      CLOUD_API_SECRET : 'fymBQJU5q66qPKxM1iR3S_YhtCc',
-      MAP_TOKEN : 'pk.eyJ1IjoiamFnbHlhbmhpbWFuc2h1IiwiYSI6ImNtMWRsdTJkNjB6cjMyaXNidGwyNzd5d3EifQ.GHZlofUaaiy8FSKvriOuFw',
-      ATLISTDB : 'mongodb+srv://vishalk389:5Hln6uYcMiR5Q6q8@cluster0.o06uk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',
-      SECRET : 'jbjbjghbmjmb',
-    });
-
-
     
     main()
       .then(() => {
@@ -58,23 +47,6 @@ if(process.env.NODE_ENV !="production"){
     app.use(methodOverride("_method"));
     app.engine("ejs",ejsMate);
     app.use(express.static(path.join(__dirname,"/public")));
-    
-    
-
-    const storage = new CloudinaryStorage({
-      cloudinary: cloudinary,
-      params: {
-        folder: 'uploads',
-        format: async (req, file) => 'png', // supports promises as well
-        public_id: (req, file) => file.originalname
-      },
-    });
-
-    const upload = multer({ storage: storage });
-
-    app.post('/upload', upload.single('image'), (req, res) => {
-      res.send('File uploaded to Cloudinary');
-    });
 
 
 
