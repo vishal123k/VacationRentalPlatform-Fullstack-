@@ -90,18 +90,18 @@ if(process.env.NODE_ENV !="production"){
     
     app.use("/listings",listingRouter);
     app.use("/listings/:id/review", reviewRouter);
-    app.use("/",userRouter);
+    app.use("/listings",userRouter);
     
-    app.all("/",(req,res,next)=>{
+    app.all("*",(req,res,next)=>{
       next(new expressError(404,"page not found"));
     });
     
     app.use((err,req,res,next)=>{
       let {status = 500,message} = err;
       res.status(status).render("error.ejs",{message});
+      next();
     });
 
-    
     app.listen(8080, () => {
     console.log(`Server running on port ${8080}`);
 });
